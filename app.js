@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+
 const productRoutes = require('./api/routes/products');
 const orderRoutes = require('./api/routes/orders');
 
@@ -18,8 +19,8 @@ mongoose.connect(mlab, {
 
 mongoose.Promise = global.Promise;
 
-// morgan for log request
-app.use(morgan('dev'));
+app.use(morgan('dev')); // for request log
+app.use('/uploads', express.static('uploads')); // for making "uploads" folder accessible
 app.use(bodyParser.urlencoded({
   extended: true,
 }));

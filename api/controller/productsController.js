@@ -1,10 +1,38 @@
 const mongoose = require('mongoose');
+const multer = require('multer');
+
 
 const Product = require('../models/product');
 
+const storage = multer.diskStorage({
+  destination(req, file, cb) {
+    cb(null, './uploads/');
+  },
+  filename(req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  // reject a file
+  if (file.mimetype === 'image/png' || file.mimetype === 'image/jpeg') {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+exports.upload = multer({
+  storage,
+  limits: {
+    fileSize: 1024 * 1024 * 5,
+  },
+  fileFilter,
+});
+
 exports.getProducts = (req, res) => {
   Product.find()
-    .select('name price _id')
+    .select('name price _id productImage')
     .exec()
     .then((docs) => {
       const response = {
@@ -13,6 +41,7 @@ exports.getProducts = (req, res) => {
           name: doc.name,
           price: doc.price,
           _id: doc.id,
+          productImage: doc.productImage,
           request: {
             type: 'GET',
             url: `http://localhost:3000/products/${doc.id}`,
@@ -31,7 +60,7 @@ exports.getProducts = (req, res) => {
 exports.getOneProduct = (req, res) => {
   const id = req.params.productId;
   Product.findById(id)
-    .select('name price _id')
+    .select('name price _id productImage')
     .exec()
     .then((doc) => {
       if (doc) {
@@ -57,6 +86,7 @@ exports.addProduct = (req, res) => {
     _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
     price: req.body.price,
+    productImage: req.file.path,
   });
   product
     .save()
@@ -67,6 +97,7 @@ exports.addProduct = (req, res) => {
           name: result.name,
           price: result.price,
           _id: result._id,
+          productImage: result.productImage,
           request: {
             type: 'GET',
             url: `http://localhost:3000/products/${result.id}`,
