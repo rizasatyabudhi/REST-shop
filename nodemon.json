@@ -1,0 +1,6 @@
+{
+  "env": {
+    "MLAB_USERNAME": "username",
+    "MLAB_PASSWORD": "password"
+  }
+}
