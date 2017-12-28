@@ -26,9 +26,6 @@ exports.addOrder = (req, res) => {
           quantity: result.quantity,
         },
       });
-    })
-    .catch((err) => {
-      res.status(500).json(err);
     });
 };
 
@@ -50,6 +47,63 @@ exports.getOrders = (req, res) => {
           },
         })),
 
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        error: err,
+      });
+    });
+};
+
+exports.getOneOrder = (req, res) => {
+  Order.findById(req.params.orderId)
+    .select('quantity productId _id')
+    .exec()
+    .then((order) => {
+      if (order) {
+        res.status(200).json(order);
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({
+        error: err,
+      });
+    });
+};
+
+
+exports.getOneProduct = (req, res) => {
+  const id = req.params.productId;
+  Product.findById(id)
+    .select('name price _id')
+    .exec()
+    .then((product) => {
+      if (product) {
+        res.status(200).json({
+          product,
+          request: {
+            type: 'GET',
+            description: 'Get all products',
+            url: 'http://localhost:3000/products',
+          },
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({
+        error: err,
+      });
+    });
+};
+
+exports.removeOrder = (req, res) => {
+  const id = req.params.orderId;
+  Order.findByIdAndRemove(id)
+    .exec()
+    .then(() => {
+      res.status(200).json({
+        message: 'Order removed',
       });
     })
     .catch((err) => {
