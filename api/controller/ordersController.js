@@ -33,6 +33,7 @@ exports.getOrders = (req, res) => {
   Order
     .find()
     .select('product quantity _id')
+    .populate('product', 'name')
     .exec()
     .then((orders) => {
       res.status(200).json({
@@ -59,6 +60,7 @@ exports.getOrders = (req, res) => {
 exports.getOneOrder = (req, res) => {
   Order.findById(req.params.orderId)
     .select('quantity productId _id')
+    .populate('product', 'name')
     .exec()
     .then((order) => {
       if (!order) {
