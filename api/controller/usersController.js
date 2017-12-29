@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
 
 exports.signup = (req, res) => {
   User.find({
@@ -64,8 +65,15 @@ exports.login = (req, res) => {
           });
         }
         if (result) {
+          const token = jwt.sign({
+            email: user.email,
+            userId: user._id,
+          }, process.env.JWT_KEY, {
+            expiresIn: '1h',
+          });
           return res.status(200).json({
             message: 'Auth success',
+            token,
           });
         }
         return res.status(401).json({

@@ -1,6 +1,7 @@
 {
   "env": {
     "MLAB_USERNAME": "username",
-    "MLAB_PASSWORD": "password"
+    "MLAB_PASSWORD": "password",
+    "JWT_KEY": "secret"
   }
 }
