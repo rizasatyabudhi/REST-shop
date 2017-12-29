@@ -43,3 +43,35 @@ exports.signup = (req, res) => {
     })
     .catch();
 };
+
+exports.login = (req, res) => {
+  User.findOne({
+    email: req.body.email,
+  })
+    .exec()
+    .then((user) => {
+      // if email not found
+      if (user.length < 1) {
+        return res.status(401).json({
+          message: 'Auth failed',
+        });
+      }
+      return bcrypt.compare(req.body.password, user.password, (err, result) => {
+        // if password doesn't match
+        if (err) {
+          return res.status(401).json({
+            message: 'Auth failed',
+          });
+        }
+        if (result) {
+          return res.status(200).json({
+            message: 'Auth success',
+          });
+        }
+        return res.status(401).json({
+          message: 'Auth failed',
+        });
+      });
+    })
+    .catch();
+};
