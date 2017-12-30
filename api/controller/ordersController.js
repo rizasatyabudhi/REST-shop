@@ -74,34 +74,6 @@ exports.addOrder = async (req, res) => {
   });
 };
 
-// exports.addOrder = (req, res) => {
-//   Product.findById(req.body.productId)
-//     .then((product) => {
-//       if (!product) {
-//         res.status(404).json({
-//           message: 'Product not found',
-//         });
-//       }
-//       const order = new Order({
-//         _id: new mongoose.Types.ObjectId(),
-//         quantity: req.body.quantity,
-//         product: req.body.productId,
-//       });
-//       return order.save();
-//     })
-//     .then((result) => {
-//       res.status(201).json({
-//         message: 'Order Stored',
-//         createdOrder: {
-//           _id: result.id,
-//           product: result.product,
-//           quantity: result.quantity,
-//         },
-//       });
-//     });
-// };
-
-
 exports.removeOrder = async (req, res) => {
   const id = req.params.orderId;
   const order = await Order.findByIdAndRemove(id).exec();
