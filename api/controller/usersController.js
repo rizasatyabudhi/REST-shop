@@ -57,6 +57,7 @@ exports.login = (req, res) => {
           message: 'Auth failed',
         });
       }
+      // compare the password from the request body with the database (user)
       return bcrypt.compare(req.body.password, user.password, (err, result) => {
         // if password doesn't match
         if (err) {
