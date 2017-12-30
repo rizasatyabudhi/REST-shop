@@ -20,11 +20,11 @@ exports.signup = async (req, res) => {
 
   bcrypt.hash(req.body.password, 10, async (err, hash) => {
     try {
-      if (err) {
-        return res.status(500).json({
-          error: err,
-        });
-      }
+      // if (err) {
+      //   return res.status(500).json({
+      //     error: err,
+      //   });
+      // }
       const user = await new User({
         _id: new mongoose.Types.ObjectId(),
         email: req.body.email,
@@ -48,38 +48,38 @@ exports.login = async (req, res) => {
     email: req.body.email,
   }).exec();
 
-  // if email not found
+  // if email is not found
   if (!user) {
     return res.status(401).json({
-      message: 'Auth failed',
+      message: 'Auth failed ',
     });
   }
 
+  // if email is found
+
   // compare the password from the request body with the database (user)
   return bcrypt.compare(req.body.password, user.password, (err, result) => {
-    try {
-      // if password doesn't match
-      if (err) {
-        return res.status(401).json({
-          message: 'Auth failed',
-        });
-      }
-
-      if (result) {
-        const token = jwt.sign({
-          email: user.email,
-          userId: user._id,
-        }, process.env.JWT_KEY, {
-          expiresIn: '1h',
-        });
-        return res.status(200).json({
-          message: 'Auth success',
-          token,
-        });
-      }
-    } catch (error) {
+    // // if password doesn't match
+    // if (err) {
+    //   return res.status(401).json({
+    //     message: 'Auth failed ASU',
+    //   });
+    // }
+    if (result) {
+      const token = jwt.sign({
+        email: user.email,
+        userId: user._id,
+      }, process.env.JWT_KEY, {
+        expiresIn: '1h',
+      });
+      return res.status(200).json({
+        message: 'Auth success',
+        token,
+      });
+    }
+    if (err) {
       return res.status(401).json({
-        message: 'Auth failed',
+        message: 'Auth failed ASU',
       });
     }
   });
