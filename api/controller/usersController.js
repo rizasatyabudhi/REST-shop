@@ -19,12 +19,15 @@ exports.signup = async (req, res) => {
   }
 
   bcrypt.hash(req.body.password, 10, async (err, hash) => {
+    // if there is an error
+    if (err) {
+      return res.status(500).json({
+        error: err,
+      });
+    }
+
+    // if there is NO error
     try {
-      // if (err) {
-      //   return res.status(500).json({
-      //     error: err,
-      //   });
-      // }
       const user = await new User({
         _id: new mongoose.Types.ObjectId(),
         email: req.body.email,
@@ -36,7 +39,7 @@ exports.signup = async (req, res) => {
       });
     } catch (error) {
       res.status(500).json({
-        error,
+        message: error.errors.email.message,
       });
     }
   });
